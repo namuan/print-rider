@@ -1,0 +1,75 @@
+plugins {
+    id "net.ltgt.apt-eclipse" version "0.21"
+    id "com.github.johnrengelman.shadow" version "5.0.0"
+    id "application"
+}
+
+
+
+version "0.1"
+group "dev.deskriders.printrider"
+
+repositories {
+    mavenCentral()
+    maven { url "https://jcenter.bintray.com" }
+    maven { url "https://s3.eu-central-1.amazonaws.com/dynamodb-local-frankfurt/release"}
+}
+
+configurations {
+    // for dependencies that are needed for development only
+    developmentOnly 
+}
+
+dependencies {
+    compileOnly "org.projectlombok:lombok:${lombokVersion}"
+
+    annotationProcessor "org.projectlombok:lombok:${lombokVersion}"
+    annotationProcessor "io.micronaut:micronaut-graal"
+    annotationProcessor platform("io.micronaut:micronaut-bom:${micronautVersion}")
+    annotationProcessor "io.micronaut:micronaut-inject-java"
+    annotationProcessor "io.micronaut:micronaut-validation"
+
+    implementation platform("io.micronaut:micronaut-bom:${micronautVersion}")
+    implementation "io.micronaut:micronaut-inject"
+    implementation "io.micronaut:micronaut-validation"
+    implementation "io.micronaut:micronaut-runtime"
+    implementation "javax.annotation:javax.annotation-api"
+    implementation "io.micronaut:micronaut-http-server-netty"
+    implementation "io.micronaut:micronaut-http-client"
+    implementation "io.micronaut:micronaut-views"
+    implementation "com.amazonaws:aws-java-sdk-dynamodb:${awsDynamoDbVersion}"
+    implementation "org.jsoup:jsoup:${jsoupVersion}"
+
+    runtimeOnly "ch.qos.logback:logback-classic:${logbackVersion}"
+    runtimeOnly "org.thymeleaf:thymeleaf:${thymeleafVersion}"
+
+    testAnnotationProcessor platform("io.micronaut:micronaut-bom:${micronautVersion}")
+    testAnnotationProcessor "io.micronaut:micronaut-inject-java"
+
+    testImplementation platform("io.micronaut:micronaut-bom:${micronautVersion}")
+    testImplementation "org.junit.jupiter:junit-jupiter-api"
+    testImplementation "io.micronaut.test:micronaut-test-junit5"
+    testImplementation "org.jeasy:easy-random-core:${easyRandomVersion}"
+    testImplementation "org.assertj:assertj-core:${assertjVersion}"
+
+    testRuntimeOnly "org.junit.jupiter:junit-jupiter-engine"
+}
+
+test.classpath += configurations.developmentOnly
+
+mainClassName = "dev.deskriders.printrider.Application"
+// use JUnit 5 platform
+test {
+    useJUnitPlatform()
+}
+tasks.withType(JavaCompile){
+    options.encoding = "UTF-8"
+    options.compilerArgs.add('-parameters')
+}
+
+shadowJar {
+    mergeServiceFiles()
+}
+
+run.classpath += configurations.developmentOnly
+run.jvmArgs('-noverify', '-XX:TieredStopAtLevel=1', '-Dcom.sun.management.jmxremote')
