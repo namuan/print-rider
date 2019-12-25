@@ -7,6 +7,8 @@ services:
       - dynamo
     volumes:
     - ~/.aws:/root/.aws
+    environment:
+      MICRONAUT_ENVIRONMENTS: dev
     ports:
       - 8080:8080
     links:

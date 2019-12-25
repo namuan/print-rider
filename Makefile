@@ -20,14 +20,14 @@ run-sam-local: assemble ## Startup SAM locally
 assemble: ## Gradle Assemble
 	./gradlew assemble
 
-deploy-sls-infra: ## Deploy infrastructure with Serverless framework
-	sls deploy -v
+deploy-sls-infra: assemble ## Deploy infrastructure with Serverless framework
+	sls --config infra/serverless.yml deploy -v
 
 remove-sls-infra: ## Remove infrastructure with Serverless framework
-	sls remove -v
+	sls --config infra/serverless.yml remove -v
 
-deploy-sls-function: ## Deploy function with Serverless framework
-	sls deploy function -f print-rider
+deploy-sls-function: assemble ## Deploy function with Serverless framework
+	sls --config infra/serverless.yml deploy function -f print-rider
 
 .PHONY: help
 .DEFAULT_GOAL := help

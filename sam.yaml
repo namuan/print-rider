@@ -10,7 +10,7 @@ Resources:
     Properties:
       Handler: dev.deskriders.printrider.StreamLambdaHandler::handleRequest
       Runtime: java11
-      CodeUri: build/libs/print-rider-0.1-all.jar
+      CodeUri: build/distributions/print-rider-0.1.zip
       MemorySize: 512
       Policies: AWSLambdaBasicExecutionRole
       Timeout: 15

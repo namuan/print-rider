@@ -1,8 +1,8 @@
 plugins {
     id "com.github.johnrengelman.shadow" version "5.0.0"
     id "application"
-    id 'com.google.cloud.tools.jib' version '1.8.0'
 }
+
 
 
 version "0.1"
@@ -11,47 +11,42 @@ group "dev.deskriders.printrider"
 repositories {
     mavenCentral()
     maven { url "https://jcenter.bintray.com" }
-    maven { url "https://s3.eu-central-1.amazonaws.com/dynamodb-local-frankfurt/release"}
 }
 
 configurations {
     // for dependencies that are needed for development only
-    developmentOnly 
+    developmentOnly
 }
 
 dependencies {
     compileOnly "org.projectlombok:lombok:${lombokVersion}"
 
     annotationProcessor "org.projectlombok:lombok:${lombokVersion}"
-    annotationProcessor "io.micronaut:micronaut-graal"
-    annotationProcessor platform("io.micronaut:micronaut-bom:${micronautVersion}")
+    annotationProcessor platform("io.micronaut:micronaut-bom:$micronautVersion")
     annotationProcessor "io.micronaut:micronaut-inject-java"
     annotationProcessor "io.micronaut:micronaut-validation"
 
-    compileOnly "org.graalvm.nativeimage:svm:19.3.0"
-
-    implementation platform("io.micronaut:micronaut-bom:${micronautVersion}")
+    implementation platform("io.micronaut:micronaut-bom:$micronautVersion")
+    implementation "io.micronaut:micronaut-http-client"
     implementation "io.micronaut:micronaut-inject"
     implementation "io.micronaut:micronaut-validation"
     implementation "io.micronaut:micronaut-runtime"
+    implementation "io.micronaut.aws:micronaut-function-aws-api-proxy"
     implementation "javax.annotation:javax.annotation-api"
-    implementation "io.micronaut:micronaut-http-server-netty"
-    implementation "io.micronaut:micronaut-http-client"
-    implementation 'io.micronaut:micronaut-views-thymeleaf'
     implementation "com.amazonaws:aws-java-sdk-dynamodb:${awsDynamoDbVersion}"
+    implementation 'io.micronaut:micronaut-views-thymeleaf'
     implementation "org.jsoup:jsoup:${jsoupVersion}"
-    implementation("io.micronaut.aws:micronaut-function-aws-api-proxy") {
-        exclude group: "org.apache.httpcomponents"
-        exclude group: "org.slf4j"
-    }
 
-    runtimeOnly "ch.qos.logback:logback-classic:${logbackVersion}"
-    runtimeOnly "org.thymeleaf:thymeleaf:${thymeleafVersion}"
+    runtimeOnly "org.apache.logging.log4j:log4j-core:2.8.2"
+    runtimeOnly "org.apache.logging.log4j:log4j-api:2.8.2"
+    runtimeOnly "org.apache.logging.log4j:log4j-slf4j-impl:2.8.2"
+    runtimeOnly "com.amazonaws:aws-lambda-java-log4j2:1.1.0"
+    runtimeOnly "io.micronaut:micronaut-http-server-netty"
 
-    testAnnotationProcessor platform("io.micronaut:micronaut-bom:${micronautVersion}")
+    testAnnotationProcessor platform("io.micronaut:micronaut-bom:$micronautVersion")
     testAnnotationProcessor "io.micronaut:micronaut-inject-java"
 
-    testImplementation platform("io.micronaut:micronaut-bom:${micronautVersion}")
+    testImplementation platform("io.micronaut:micronaut-bom:$micronautVersion")
     testImplementation "org.junit.jupiter:junit-jupiter-api"
     testImplementation "io.micronaut.test:micronaut-test-junit5"
     testImplementation "org.jeasy:easy-random-core:${easyRandomVersion}"
@@ -63,13 +58,10 @@ dependencies {
 test.classpath += configurations.developmentOnly
 
 mainClassName = "dev.deskriders.printrider.Application"
+
 // use JUnit 5 platform
 test {
     useJUnitPlatform()
-}
-tasks.withType(JavaCompile){
-    options.encoding = "UTF-8"
-    options.compilerArgs.add('-parameters')
 }
 
 shadowJar {
@@ -78,3 +70,15 @@ shadowJar {
 
 run.classpath += configurations.developmentOnly
 run.jvmArgs('-noverify', '-XX:TieredStopAtLevel=1', '-Dcom.sun.management.jmxremote')
+tasks.withType(JavaCompile){
+    options.encoding = "UTF-8"
+    options.compilerArgs.add('-parameters')
+}
+task buildZip(type: Zip) {
+    from sourceSets.main.output
+    into('lib') {
+        from configurations.compileClasspath
+        from configurations.runtimeClasspath
+    }
+}
+shadowJar.dependsOn buildZip

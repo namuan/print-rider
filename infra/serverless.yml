@@ -16,8 +16,9 @@ provider:
           - PrintDocumentsDynamoDbTable
           - Arn
 
+
 package:
-  artifact: build/libs/print-rider-0.1-all.jar
+  artifact: build/distributions/print-rider-0.1.zip
 
 functions:
   print-rider:
