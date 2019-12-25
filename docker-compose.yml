@@ -1,0 +1,19 @@
+version: '3.3'
+
+services:
+  print-rider:
+    image: "print-rider:0.1"
+    depends_on:
+      - dynamo
+    volumes:
+    - ~/.aws:/root/.aws
+    ports:
+      - 8080:8080
+    links:
+      - dynamo:dynamo
+  dynamo:
+    image: "instructure/dynamo-local-admin"
+    ports:
+      - 8000:8000
+volumes:
+  db_data:

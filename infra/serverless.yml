@@ -1,0 +1,45 @@
+service: print-rider
+
+provider:
+  name: aws
+  runtime: java11
+  profile: printrider
+  region: eu-west-1
+  iamRoleStatements:
+    - Effect: Allow
+      Action:
+        - dynamodb:UpdateItem
+        - dynamodb:PutItem
+        - dynamodb:GetItem
+      Resource:
+        Fn::GetAtt:
+          - PrintDocumentsDynamoDbTable
+          - Arn
+
+package:
+  artifact: build/libs/print-rider-0.1-all.jar
+
+functions:
+  print-rider:
+    handler: dev.deskriders.printrider.StreamLambdaHandler::handleRequest
+    events:
+      - http:
+          path: /{proxy+}
+          method: ANY
+
+resources:
+  Resources:
+    PrintDocumentsDynamoDbTable:
+      Type: AWS::DynamoDB::Table
+      DeletionPolicy: Retain
+      Properties:
+        AttributeDefinitions:
+          - AttributeName: DocId
+            AttributeType: S
+        KeySchema:
+          - AttributeName: DocId
+            KeyType: HASH
+        ProvisionedThroughput:
+          ReadCapacityUnits: 1
+          WriteCapacityUnits: 1
+        TableName: PrintDocuments

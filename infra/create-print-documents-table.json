@@ -1,0 +1,13 @@
+{
+  "TableName": "PrintDocuments",
+  "KeySchema": [
+    { "AttributeName": "DocId", "KeyType": "HASH" }
+  ],
+  "AttributeDefinitions": [
+    { "AttributeName": "DocId", "AttributeType": "S" }
+  ],
+  "ProvisionedThroughput": {
+    "ReadCapacityUnits": 1,
+    "WriteCapacityUnits": 1
+  }
+}

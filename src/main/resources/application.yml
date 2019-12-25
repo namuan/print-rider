@@ -1,5 +1,3 @@
 micronaut:
   application:
     name: print-rider
-
-hostname: http://localhost:8080

@@ -1,4 +1,16 @@
-FROM adoptopenjdk/openjdk11-openj9:jdk-11.0.1.13-alpine-slim
-COPY build/libs/print-rider-*-all.jar print-rider.jar
+FROM gradle:5.6-jdk11 as gradle
+COPY --chown=gradle . /home/app
+WORKDIR /home/app
+RUN gradle assemble --no-daemon
+
+FROM oracle/graalvm-ce:19.3.0-java11 as graalvm
+COPY --from=gradle /home/app/build/libs/print-rider-*-all.jar /home/app/print-server.jar
+COPY proxy-config.json /home/app/
+WORKDIR /home/app
+RUN gu install native-image
+RUN native-image --no-server --static -cp /home/app/print-server.jar
+
+FROM frolvlad/alpine-glibc
 EXPOSE 8080
-CMD java -Dcom.sun.management.jmxremote -noverify ${JAVA_OPTS} -jar print-rider.jar
+COPY --from=graalvm /home/app/print-rider /app/print-rider
+ENTRYPOINT ["/app/print-rider", "-Djava.library.path=/app"]

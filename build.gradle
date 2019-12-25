@@ -1,9 +1,8 @@
 plugins {
-    id "net.ltgt.apt-eclipse" version "0.21"
     id "com.github.johnrengelman.shadow" version "5.0.0"
     id "application"
+    id 'com.google.cloud.tools.jib' version '1.8.0'
 }
-
 
 
 version "0.1"
@@ -29,6 +28,8 @@ dependencies {
     annotationProcessor "io.micronaut:micronaut-inject-java"
     annotationProcessor "io.micronaut:micronaut-validation"
 
+    compileOnly "org.graalvm.nativeimage:svm:19.3.0"
+
     implementation platform("io.micronaut:micronaut-bom:${micronautVersion}")
     implementation "io.micronaut:micronaut-inject"
     implementation "io.micronaut:micronaut-validation"
@@ -36,9 +37,13 @@ dependencies {
     implementation "javax.annotation:javax.annotation-api"
     implementation "io.micronaut:micronaut-http-server-netty"
     implementation "io.micronaut:micronaut-http-client"
-    implementation "io.micronaut:micronaut-views"
+    implementation 'io.micronaut:micronaut-views-thymeleaf'
     implementation "com.amazonaws:aws-java-sdk-dynamodb:${awsDynamoDbVersion}"
     implementation "org.jsoup:jsoup:${jsoupVersion}"
+    implementation("io.micronaut.aws:micronaut-function-aws-api-proxy") {
+        exclude group: "org.apache.httpcomponents"
+        exclude group: "org.slf4j"
+    }
 
     runtimeOnly "ch.qos.logback:logback-classic:${logbackVersion}"
     runtimeOnly "org.thymeleaf:thymeleaf:${thymeleafVersion}"
