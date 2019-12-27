@@ -1,3 +1,3 @@
 app:
-  hostname: http://test
+  domainName: http://test
   dynamo: http://localhost:8000
