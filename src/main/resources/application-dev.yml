@@ -1,3 +1,0 @@
-app:
-  hostname: http://localhost:8080
-  dynamo: http://dynamo:8000

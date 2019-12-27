@@ -8,6 +8,6 @@ import lombok.Setter;
 @Setter
 @ConfigurationProperties(value = "app")
 public class AppConfig {
-    private String hostname;
+    private String domainName;
     private String dynamo;
 }

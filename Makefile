@@ -12,7 +12,7 @@ setup-local: dynamo-local ## Setup local environment (DynamoDb tables etc)
 	aws dynamodb create-table --cli-input-json file://development/create-print-documents-table.json --endpoint-url http://localhost:8000
 
 run-local: ## Runs the service locally connecting with dynamodb in Docker
-	APP_DYNAMO=http://localhost:8000 MICRONAUT_ENVIRONMENTS=dev ./gradlew run
+	APP_DOMAIN_NAME=http://localhost:8080 APP_DYNAMO=http://localhost:8000 MICRONAUT_ENVIRONMENTS=dev ./gradlew run
 
 test-local: ## Test the service locally connecting with dynamodb in Docker
 	./gradlew test
@@ -24,13 +24,13 @@ assemble: ## Gradle Assemble
 	./gradlew assemble
 
 deploy-sls-infra: assemble ## Deploy infrastructure with Serverless framework
-	sls --config infra/serverless.yml deploy -v
+	cd infra && sls --config serverless.yml deploy -v
 
 remove-sls-infra: ## Remove infrastructure with Serverless framework
-	sls --config infra/serverless.yml remove -v
+	cd infra && sls --config serverless.yml remove -v
 
 deploy-sls-function: assemble ## Deploy function with Serverless framework
-	sls --config infra/serverless.yml deploy function -f print-rider
+	cd infra && sls --config serverless.yml deploy function -f print-rider
 
 .PHONY: help
 .DEFAULT_GOAL := help

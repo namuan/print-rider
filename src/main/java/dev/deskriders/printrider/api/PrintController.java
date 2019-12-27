@@ -30,7 +30,7 @@ public class PrintController {
     @Post(consumes = {MediaType.APPLICATION_JSON})
     public HttpResponse savePrint(@Valid PrintRequest printRequest) {
         String printId = printService.savePrintDocument(printRequest.getDocument());
-        return HttpResponse.created(URI.create(appConfig.getHostname() + "/prints/" + printId));
+        return HttpResponse.created(URI.create(appConfig.getDomainName() + "/prints/" + printId));
     }
 
     @View(value = "print")

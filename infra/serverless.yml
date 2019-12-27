@@ -1,10 +1,25 @@
 service: print-rider
+plugins:
+  - serverless-domain-manager
+  - serverless-api-gateway-caching
+
+custom:
+  stage: ${opt:stage, self:provider.stage}
+  tableName: ${self:custom.stage}-print-documents
+  customDomain:
+    domainName: printrider.bettercallbots.com
+    createRoute53Record: true
+    certificateArn: "arn:aws:acm:us-east-1:347829120738:certificate/b93887b3-c826-438e-bd0a-8e38102a89ec"
 
 provider:
   name: aws
   runtime: java11
+  stage: dev
   profile: printrider
   region: eu-west-1
+  environment:
+    APP_DOMAIN_NAME: https://${self:custom.customDomain.domainName}
+    APP_PRINT_DOCUMENTS_DB_TABLE: ${self:custom.tableName}
   iamRoleStatements:
     - Effect: Allow
       Action:
@@ -18,10 +33,10 @@ provider:
 
 
 package:
-  artifact: build/distributions/print-rider-0.1.zip
+  artifact: ../build/distributions/print-rider-0.1.zip
 
 functions:
-  print-rider:
+  PrintRiderFunction:
     handler: dev.deskriders.printrider.StreamLambdaHandler::handleRequest
     events:
       - http:

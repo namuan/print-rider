@@ -16,6 +16,11 @@ Resources:
       MemorySize: 512
       Policies: AWSLambdaBasicExecutionRole
       Timeout: 15
+      Environment:
+        Variables:
+          APP_DOMAIN_NAME: "http://localhost:8080"
+          APP_PRINT_DOCUMENTS_DB_TABLE: "local-print-documents"
+          APP_DYNAMO: "http://dynamo:8000"
       Events:
         GetResource:
           Type: Api
