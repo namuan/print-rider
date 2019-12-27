@@ -10,4 +10,5 @@ import lombok.Setter;
 public class AppConfig {
     private String domainName;
     private String dynamo;
+    private String printDocumentsDbTable;
 }

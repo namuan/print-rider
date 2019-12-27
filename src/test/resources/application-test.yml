@@ -1,3 +1,4 @@
 app:
   domainName: http://test
   dynamo: http://localhost:8000
+  printDocumentsDbTable: local-print-documents

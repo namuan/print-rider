@@ -1,5 +1,5 @@
 {
-  "TableName": "PrintDocuments",
+  "TableName": "local-print-documents",
   "KeySchema": [
     { "AttributeName": "DocId", "KeyType": "HASH" }
   ],

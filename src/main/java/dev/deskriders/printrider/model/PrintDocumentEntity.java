@@ -6,7 +6,7 @@ import com.amazonaws.services.dynamodbv2.datamodeling.DynamoDBTable;
 import lombok.Data;
 
 @Data
-@DynamoDBTable(tableName = "PrintDocuments")
+@DynamoDBTable(tableName = "SEE_DYNAMO_DB_MAPPER_FACTORY")
 public class PrintDocumentEntity {
     @DynamoDBHashKey(attributeName = "DocId")
     private String docId;

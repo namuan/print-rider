@@ -12,7 +12,7 @@ setup-local: dynamo-local ## Setup local environment (DynamoDb tables etc)
 	aws dynamodb create-table --cli-input-json file://development/create-print-documents-table.json --endpoint-url http://localhost:8000
 
 run-local: ## Runs the service locally connecting with dynamodb in Docker
-	APP_DOMAIN_NAME=http://localhost:8080 APP_DYNAMO=http://localhost:8000 MICRONAUT_ENVIRONMENTS=dev ./gradlew run
+	APP_PRINT_DOCUMENTS_DB_TABLE=local-print-documents APP_DOMAIN_NAME=http://localhost:8080 APP_DYNAMO=http://localhost:8000 MICRONAUT_ENVIRONMENTS=dev ./gradlew run
 
 test-local: ## Test the service locally connecting with dynamodb in Docker
 	./gradlew test

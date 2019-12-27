@@ -53,8 +53,8 @@ dependencies {
 
     testRuntimeOnly "org.junit.jupiter:junit-jupiter-engine"
 //  Swap the following 2 lines to run micronaut service without SAM
-    testRuntimeOnly "io.micronaut:micronaut-http-server-netty"
-//  runtimeOnly "io.micronaut:micronaut-http-server-netty"
+//    testRuntimeOnly "io.micronaut:micronaut-http-server-netty"
+  runtimeOnly "io.micronaut:micronaut-http-server-netty"
 }
 
 test.classpath += configurations.developmentOnly
