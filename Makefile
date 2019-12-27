@@ -2,20 +2,23 @@ export PROJECTNAME=$(shell basename "$(PWD)")
 
 .SILENT: ;               # no need for @
 
+clean: ## Runs gradlew clean
+	./gradlew clean
+
 dynamo-local: ## Start local dynamo database
 	docker-compose up -d dynamo
 
 setup-local: dynamo-local ## Setup local environment (DynamoDb tables etc)
-	aws dynamodb create-table --cli-input-json file://infra/create-print-documents-table.json --endpoint-url http://localhost:8000
+	aws dynamodb create-table --cli-input-json file://development/create-print-documents-table.json --endpoint-url http://localhost:8000
 
-run-local: # Runs the service locally connecting with dynamodb in Docker
+run-local: ## Runs the service locally connecting with dynamodb in Docker
 	APP_DYNAMO=http://localhost:8000 MICRONAUT_ENVIRONMENTS=dev ./gradlew run
 
-test-local: # Test the service locally connecting with dynamodb in Docker
+test-local: ## Test the service locally connecting with dynamodb in Docker
 	./gradlew test
 
-run-sam-local: assemble ## Startup SAM locally
-	sam local start-api --template sam.yaml --docker-network print-rider_default
+run-local-sam: assemble	## Runs the service locally with SAM
+	sam local start-api --template development/sam.yaml --docker-network print-rider_default
 
 assemble: ## Gradle Assemble
 	./gradlew assemble
