@@ -1,13 +1,13 @@
 package dev.deskriders.printrider.config;
 
-import com.amazonaws.client.builder.AwsClientBuilder;
-import com.amazonaws.services.dynamodbv2.AmazonDynamoDBClientBuilder;
-import com.amazonaws.services.dynamodbv2.datamodeling.DynamoDBMapper;
 import io.micronaut.context.annotation.Replaces;
 import io.micronaut.context.annotation.Requires;
 import io.micronaut.context.env.Environment;
+import jakarta.inject.Singleton;
+import software.amazon.awssdk.regions.Region;
+import software.amazon.awssdk.services.dynamodb.DynamoDbClient;
 
-import javax.inject.Singleton;
+import java.net.URI;
 
 @Singleton
 @Replaces(DynamoDbConfig.class)
@@ -15,15 +15,9 @@ import javax.inject.Singleton;
 public class LocalDynamoDbConfig extends DbConfig {
 
     public LocalDynamoDbConfig(AppConfig appConfig) {
-        String dynamoEndpoint = appConfig.getDynamo();
-
-        AwsClientBuilder.EndpointConfiguration endpointConfiguration = new AwsClientBuilder.EndpointConfiguration(
-                dynamoEndpoint, "eu-west-1"
-        );
-        this.amazonDynamoDB = AmazonDynamoDBClientBuilder
-                .standard()
-                .withEndpointConfiguration(endpointConfiguration)
+        this.dynamoDbClient = DynamoDbClient.builder()
+                .region(Region.EU_WEST_1)
+                .endpointOverride(URI.create(appConfig.getDynamo()))
                 .build();
-        this.dynamoDBMapper = new DynamoDBMapper(this.amazonDynamoDB);
     }
 }

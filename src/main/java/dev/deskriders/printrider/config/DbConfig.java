@@ -1,17 +1,9 @@
 package dev.deskriders.printrider.config;
 
-import com.amazonaws.services.dynamodbv2.AmazonDynamoDB;
-import com.amazonaws.services.dynamodbv2.datamodeling.DynamoDBMapper;
 import lombok.Getter;
+import software.amazon.awssdk.services.dynamodb.DynamoDbClient;
 
 public class DbConfig {
     @Getter
-    protected AmazonDynamoDB amazonDynamoDB;
-
-    @Getter
-    protected DynamoDBMapper dynamoDBMapper;
-
-    public DynamoDBMapper dynamoDbMapper() {
-        return this.dynamoDBMapper;
-    }
+    protected DynamoDbClient dynamoDbClient;
 }

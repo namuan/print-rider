@@ -1,20 +1,18 @@
 package dev.deskriders.printrider.config;
 
-import com.amazonaws.services.dynamodbv2.datamodeling.DynamoDBMapperConfig;
 import io.micronaut.context.annotation.Bean;
 import io.micronaut.context.annotation.Factory;
+import jakarta.inject.Named;
 
+/**
+ * Factory that provides the configured DynamoDB table name.
+ */
 @Factory
 public class DynamoDbMapperFactory {
+
     @Bean
-    public DynamoDBMapperConfig dynamoDBMapperConfig(AppConfig appConfig) {
-        return DynamoDBMapperConfig
-                .builder()
-                .withTableNameOverride(
-                        new DynamoDBMapperConfig.TableNameOverride(
-                                appConfig.getPrintDocumentsDbTable()
-                        )
-                )
-                .build();
+    @Named("printDocumentsTableName")
+    public String tableName(AppConfig appConfig) {
+        return appConfig.getPrintDocumentsDbTable();
     }
 }
