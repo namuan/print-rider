@@ -9,7 +9,7 @@ Resources:
   PrintRiderFunction:
     Type: AWS::Serverless::Function
     Properties:
-      Handler: dev.deskriders.printrider.StreamLambdaHandler::handleRequest
+      Handler: dev.deskriders.printrider.StreamLambdaHandler
       Runtime: java11
       CodeUri: ../build/distributions/print-rider-0.1.zip
       MemorySize: 512
