@@ -6,7 +6,7 @@ import lombok.Setter;
 
 @Getter
 @Setter
-@ConfigurationProperties(value = "app")
+@ConfigurationProperties("app")
 public class AppConfig {
     private String domainName;
     private String dynamo;

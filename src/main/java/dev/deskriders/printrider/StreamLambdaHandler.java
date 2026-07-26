@@ -1,36 +1,28 @@
 package dev.deskriders.printrider;
 
-import com.amazonaws.serverless.exceptions.ContainerInitializationException;
-import com.amazonaws.services.lambda.runtime.Context;
-import com.amazonaws.services.lambda.runtime.RequestStreamHandler;
-import io.micronaut.context.ApplicationContext;
 import io.micronaut.context.ApplicationContextBuilder;
 import io.micronaut.context.env.Environment;
-import io.micronaut.function.aws.proxy.MicronautLambdaContainerHandler;
+import io.micronaut.function.aws.proxy.payload1.ApiGatewayProxyRequestEventFunction;
 
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.OutputStream;
-
-public class StreamLambdaHandler implements RequestStreamHandler {
-    private static MicronautLambdaContainerHandler handler;
-
-    static {
-        try {
-            ApplicationContextBuilder contextBuilder = ApplicationContext.build();
-            String aws_sam_local = System.getenv("AWS_SAM_LOCAL");
-            if (Boolean.parseBoolean(aws_sam_local)) {
-                contextBuilder.environments(Environment.DEVELOPMENT);
-            }
-            handler = new MicronautLambdaContainerHandler(contextBuilder);
-        } catch (ContainerInitializationException e) {
-            e.printStackTrace();
-            throw new RuntimeException("Could not initialise Micronaut", e);
-        }
-    }
+/**
+ * AWS Lambda handler for API Gateway v1 (REST API) proxy events.
+ * Uses {@link ApiGatewayProxyRequestEventFunction} which is the non-deprecated
+ * replacement for {@code MicronautLambdaHandler}.
+ * <p>
+ * When running under AWS SAM local ({@code AWS_SAM_LOCAL=true}), the
+ * {@code DEVELOPMENT} environment is activated so that
+ * {@link dev.deskriders.printrider.config.LocalDynamoDbConfig} replaces
+ * the production DynamoDB config.
+ */
+public class StreamLambdaHandler extends ApiGatewayProxyRequestEventFunction {
 
     @Override
-    public void handleRequest(InputStream input, OutputStream output, Context context) throws IOException {
-        handler.proxyStream(input, output, context);
+    protected ApplicationContextBuilder newApplicationContextBuilder() {
+        ApplicationContextBuilder builder = super.newApplicationContextBuilder();
+        String awsSamLocal = System.getenv("AWS_SAM_LOCAL");
+        if (Boolean.parseBoolean(awsSamLocal)) {
+            builder.environments(Environment.DEVELOPMENT);
+        }
+        return builder;
     }
 }

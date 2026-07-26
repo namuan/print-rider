@@ -37,7 +37,7 @@ package:
 
 functions:
   PrintRiderFunction:
-    handler: dev.deskriders.printrider.StreamLambdaHandler::handleRequest
+    handler: dev.deskriders.printrider.StreamLambdaHandler
     events:
       - http:
           path: /{proxy+}
